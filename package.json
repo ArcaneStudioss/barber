@@ -1,0 +1,22 @@
+{
+  "name": "barbearia-exemplo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Site, agendamento online e painel administrativo da Barbearia Exemplo",
+  "main": "server.js",
+  "engines": {
+    "node": ">=22.13"
+  },
+  "scripts": {
+    "start": "node --disable-warning=ExperimentalWarning server.js",
+    "dev": "node --disable-warning=ExperimentalWarning --watch server.js",
+    "setup": "node --disable-warning=ExperimentalWarning scripts/setup.js",
+    "demo:seed": "node --disable-warning=ExperimentalWarning scripts/demo-seed.js",
+    "demo:remove": "node --disable-warning=ExperimentalWarning scripts/demo-remove.js",
+    "backup": "node --disable-warning=ExperimentalWarning scripts/backup.js",
+    "test": "node --disable-warning=ExperimentalWarning --test test/*.test.js"
+  },
+  "dependencies": {
+    "express": "^4.22.3"
+  }
+}
