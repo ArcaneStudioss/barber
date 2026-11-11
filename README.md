@@ -85,6 +85,14 @@ Copie `.env.example` e preencha. Obrigatórias em produção:
 
 Qualquer servidor com Node 22.13+: `npm ci --omit=dev && npm start`, atrás de Nginx/Caddy com HTTPS. Use um gerenciador de processo (systemd ou pm2) e mantenha **uma única instância** (o limite de tentativas fica na memória do processo; o banco SQLite já serializa as gravações).
 
+### VPS Hostinger com Traefik (como está no ar em barber.arcanestudios.io)
+
+O projeto `barber` (Docker Compose) roda `node:22-alpine`, baixa o código da `main` deste repositório e guarda o banco no volume `dados`.
+
+**Deploy automático:** a cada 30 segundos o app compara a `main` do GitHub com o código em uso. Quando há commit novo, ele faz um **backup verificado** (se o backup falhar, o deploy espera) e reinicia sozinho, baixando o código novo. Ou seja, `git push` na `main` coloca no ar em cerca de 1 minuto. Rode `npm test` antes de enviar: um commit quebrado também vai ao ar.
+
+Variáveis do projeto na Hostinger: `APP_SECRET`, `ADMIN_PASSWORD`, `BACKUP_KEY`, `REPO_BRANCH` (padrão `main`). Backups ficam em `/dados/backups`; copie para fora da VPS antes de ter clientes reais.
+
 ### Domínio e Google
 
 - Aponte o domínio e ative HTTPS.
