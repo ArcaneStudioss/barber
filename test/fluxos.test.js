@@ -341,3 +341,17 @@ test('páginas públicas, SEO e cabeçalhos de segurança', async () => {
   assert.equal((await fetch(`${base}/.env`)).status, 404);
   assert.equal((await fetch(`${base}/data/barbearia.db`)).status, 404);
 });
+
+test('atrás da Cloudflare, o limite de tentativas usa o IP real do visitante', async () => {
+  const config = require('../src/config');
+  config.trustCloudflare = true;
+  const app2 = createApp();
+  const srv = await new Promise((r) => { const s = app2.listen(0, () => r(s)); });
+  try {
+    const url = `http://127.0.0.1:${srv.address().port}/api/admin/login`;
+    const hit = (ip) => fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'fetch', Origin: `http://127.0.0.1:${srv.address().port}`, 'CF-Connecting-IP': ip }, body: JSON.stringify({ email: 'x@x.xx', password: 'y' }) });
+    for (let i = 0; i < 10; i++) await hit('203.0.113.7');
+    assert.equal((await hit('203.0.113.7')).status, 429, 'mesmo IP é limitado');
+    assert.equal((await hit('203.0.113.8')).status, 401, 'outro visitante não é afetado');
+  } finally { config.trustCloudflare = false; srv.close(); security.resetRateLimits(); }
+});

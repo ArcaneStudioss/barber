@@ -27,6 +27,8 @@ const config = {
   databaseFile: env.DATABASE_FILE || path.join(__dirname, '..', 'data', 'barbearia.db'),
   timezone: env.TZ_BARBEARIA || 'America/Sao_Paulo',
   trustProxy: env.TRUST_PROXY === '1',
+  // 1 quando TODO o tráfego chega pela Cloudflare (Traefik com lista de IPs da Cloudflare): usa CF-Connecting-IP como IP do visitante
+  trustCloudflare: env.TRUST_CLOUDFLARE === '1',
   // Segredo usado para assinar/derivar tokens. Obrigatório em produção.
   appSecret: env.APP_SECRET || '',
   devConsoleNotifications: !isProduction && env.DEV_CONSOLE_NOTIFICATIONS === '1',

@@ -14,6 +14,13 @@ function createApp() {
   app.disable('x-powered-by');
   app.set('trust proxy', config.trustProxy ? 1 : false);
 
+  if (config.trustCloudflare) {
+    app.use((req, res, next) => {
+      const ip = req.get('cf-connecting-ip');
+      if (ip && /^[0-9a-fA-F:.]{3,45}$/.test(ip)) Object.defineProperty(req, 'ip', { value: ip, configurable: true });
+      next();
+    });
+  }
   app.use(security.securityHeaders);
   app.use('/fonts', express.static(path.join(__dirname, '..', 'public', 'fonts'), { maxAge: '365d', immutable: true }));
   app.use(express.static(path.join(__dirname, '..', 'public'), {
